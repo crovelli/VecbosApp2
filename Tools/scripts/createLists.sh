@@ -1,13 +1,36 @@
 #!/bin/bash -f
-# usage: ./createLists.sh /castor/cern.ch/user/e/emanuele/Higgs32X/V02 cmst3_32X
+# usage: ./createListsEOS.sh /store/group/phys_higgs/crovelli/Data2012B_hww
 
-maindir=$1
-listdir=$2
+while getopts "s:t:d:h" opt; do
+  case $opt in
+      s)
+      site=$OPTARG
+      ;;
+      t)
+      t2dir=$OPTARG
+      ;;
+      d)
+      maindir=$OPTARG
+      ;;
+      h)
+      echo "USAGE: createLists.sh -s <site (UCSD,Caltech,CERN)> -t <T2 mount directory (the one containing one folder/dataset)> -d <dir where to put lists> "
+      echo example: createListsEOS.sh -s UCSD -t /hadoop/cms/store/user/emanuele/VECBOS_2_53X_V3 -d lists
+      exit 0
+      ;;
+  esac
+done
 
-echo "scanning $maindir"
+if [ "$site" == 'UCSD' ]; then 
+    echo "listing $t2dir"
+    ls -l $t2dir | awk '{print $9}' > datasets.txt
+    ls -l $t2dir | awk '{print "'"$t2dir"'" "/" $9}' | xargs -i echo "ls -l " {} " | grep -v \" 0 \" | awk '{print \"{}/\" \$9}'" > commands.txt 
+fi
 
-rfdir $maindir | awk '{print $9}' > datasets.txt
-rfdir $maindir | awk '{print "'"$maindir"'" "/" $9}' | xargs -i echo "rfdir " {} " | grep -v \" 0 \" | awk '{print \"{}/\" \$9}'" > commands.txt 
+if [ "$site" == 'CERN' ]; then 
+    echo "listing $t2dir"
+    eos.select ls -l $t2dir | awk '{print $9}' > datasets.txt
+    eos.select ls -l $t2dir | awk '{print "'"$t2dir"'" "/" $9}' | xargs -i echo "eos.select ls -l " {} " | grep -v \" 0 \" | awk '{print \"{}/\" \$9}'" > commands.txt 
+fi
 
 
 N=0
@@ -27,9 +50,17 @@ done < commands.txt
 
 rm -f finalcommand.sh
 
-for ((i=1;i<$N+1;i++)); do
-    echo ${namescommand[${i}]} ">" $listdir"/"${names[${i}]}".list" >> finalcommand.sh
-done
+if [ "$site" == 'UCSD' ]; then
+    for ((i=1;i<$N+1;i++)); do
+	echo ${namescommand[${i}]} " | grep default | awk '{print \"root://xrootd.t2.ucsd.edu/\" \$1}' >" $maindir"/"${names[${i}]}".list" >> finalcommand.sh
+    done
+fi
+
+if [ "$site" == 'CERN' ]; then
+    for ((i=1;i<$N+1;i++)); do
+	echo ${namescommand[${i}]} " | grep default | awk '{print \"root://eoscms/\" \$1}' >" $maindir"/"${names[${i}]}".list" >> finalcommand.sh
+    done
+fi
 
 echo "NOW reading from castor. It may take time..."
 
@@ -39,4 +70,4 @@ rm -f datasets.txt
 rm -f commands.txt
 rm -f finalcommand.sh
 
-echo "LISTS are done in dir $listdir."
+echo "LISTS are done in dir $maindir."

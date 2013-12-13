@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <stdio.h>
+#include <stdlib.h>
 
 // ROOT includes
 #include <TROOT.h>
@@ -13,6 +14,7 @@
 //#include "Analysis/include/Application.hh"
 
 //#if Application == 1
+//#include "Analysis/src/AnalysisBase.cc"
 #include "Analysis/include/AnalysisBase.hh"
 //#endif
 

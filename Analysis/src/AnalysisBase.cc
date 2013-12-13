@@ -1,18 +1,20 @@
+#include "DataFormats/include/EventHeader.hh"
+
 #include "Analysis/include/AnalysisBase.hh"
 
-AnalysisBase::AnalysisBase(TTree *tree) :
-  fChain(0)
+using namespace vecbos;
+
+AnalysisBase::AnalysisBase(TChain *tree) :
+  VecbosEventContent(tree)
 {
   if(tree !=0) init(tree);
   else return;
 }
 
-AnalysisBase::~AnalysisBase() { }
 
-bool AnalysisBase::init(TTree* tree) {
+void AnalysisBase::init(TTree* tree) {
   if(!tree) return;
   else Init(tree);
-  
 }
 
 int AnalysisBase::loadTree(Long64_t entry) {
@@ -32,20 +34,10 @@ int AnalysisBase::loadTree(Long64_t entry) {
   return centry;
 }
 
-void loadEventHeader() {
+void AnalysisBase::loadEventHeader() {
   EventHeader* eventHeader = new EventHeader();
   eventHeader->setRun(runNumber);
   eventHeader->setEvent(eventNumber);
   eventHeader->setLumi(lumiBlock);
-  Event->setEventHeader(eventHeader)
-}
-
-AnalysisBase::AnalysisBase(TChain *chain) {
-  initVecbosTree(chain);
-}
-
-bool AnalysisBase::initVecbosTree(TTree* tree) {
-  if(!tree) return false;
-  
-  
+  Event->setEventHeader(eventHeader);
 }

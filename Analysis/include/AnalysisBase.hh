@@ -4,16 +4,18 @@
 #include <DataFormats/include/VecbosEvent.hh>
 #include <Analysis/include/VecbosEventContent.h>
 
+#include "TChain.h"
+
 namespace vecbos {
 
-  class AnalysisBase : public VecbosEventContent {
+class AnalysisBase : public VecbosEventContent {
   public:
     //! constructor
-    AnalysisBase(TChain *chain);
+    AnalysisBase(TChain *tree);
     //! destructor
-    virtual ~AnalysisBase();
+    virtual ~AnalysisBase() { }
 
-    bool                            init(TTree* tree = 0);
+    void                            init(TTree* tree = 0);
     virtual bool                    nextEvent();
     bool                            notify();
     int                             loadTree(Long64_t entry);
@@ -23,7 +25,7 @@ namespace vecbos {
 
   private:
     void loadEventHeader();
-    VecbosEvent *Event;
+    vecbos::VecbosEvent *Event;
 
   };
 }

@@ -18,7 +18,7 @@ CXXFLAGS      += $(ROOTCFLAGS)
 LIBS           = $(ROOTLIBS) 
 
 NGLIBS         = $(ROOTGLIBS) 
-#NGLIBS        += -lMinuit -lMinuit2
+NGLIBS        += -lMinuit -lMinuit2
 GLIBS          = $(filter-out -lNew, $(NGLIBS))
 
 
@@ -47,5 +47,9 @@ $(OUTLIB)AnalysisAnalysisBase.o: $(INCLUDEDIR)/Analysis/include/AnalysisBase.hh 
 VecbosApp: $(INCLUDEDIR)/Analysis/src/VecbosApp.cc \
 	$(OUTLIB)DataFormatsEventHeader.o \
 	$(OUTLIB)DataFormatsVecbosEvent.o \
+	$(OUTLIB)AnalysisVecbosEventContent.o \
 	$(OUTLIB)AnalysisAnalysisBase.o
 	$(CXX) $(CXXFLAGS) -I$(INCLUDEDIR) -ldl -o VecbosApp $(OUTLIB)/*.o $(GLIBS) $(LDFLAGS) $ $<
+
+clean:
+	rm -f lib/*o

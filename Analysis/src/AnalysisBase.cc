@@ -4,7 +4,7 @@
 
 using namespace vecbos;
 
-AnalysisBase::AnalysisBase(TChain *tree) :
+AnalysisBase::AnalysisBase(TTree *tree) :
   VecbosEventContent(tree)
 {
   if(tree !=0) init(tree);

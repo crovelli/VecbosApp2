@@ -15,11 +15,12 @@
 
 //#if Application == 1
 //#include "Analysis/src/AnalysisBase.cc"
-#include "Analysis/include/AnalysisBase.hh"
+//#include "Analysis/include/AnalysisBase.hh"
+#include "Analysis/include/VecbosEventContent.h"
 //#endif
 
 using namespace std;
-using namespace vecbos;
+//using namespace vecbos;
 
 int main(int argc, char* argv[]) {
 
@@ -64,7 +65,8 @@ int main(int argc, char* argv[]) {
   delete inputFile;
 
 
-  AnalysisBase selection(theChain);
+  //  AnalysisBase selection(theChain);
+  VecbosEventContent selection(theChain);
   selection.Loop();
 
 }

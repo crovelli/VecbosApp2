@@ -37,18 +37,15 @@ $(OUTLIB)DataFormatsVecbosEvent.o: $(INCLUDEDIR)/DataFormats/include/VecbosEvent
 
 
 # Analysis libs
-$(OUTLIB)AnalysisVecbosEventContent.o: $(INCLUDEDIR)/Analysis/include/VecbosEventContent.h
+$(OUTLIB)AnalysisVecbosEventContent.o: $(INCLUDEDIR)/Analysis/src/VecbosEventContent.C
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)AnalysisVecbosEventContent.o $<
 
-$(OUTLIB)AnalysisAnalysisBase.o: $(INCLUDEDIR)/Analysis/include/AnalysisBase.hh \
+$(OUTLIB)AnalysisAnalysisBase.o: $(INCLUDEDIR)/Analysis/src/AnalysisBase.cc \
 	$(OUTLIB)AnalysisVecbosEventContent.o
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)AnalysisAnalysisBase.o $<
 
 VecbosApp: $(INCLUDEDIR)/Analysis/src/VecbosApp.cc \
-	$(OUTLIB)DataFormatsEventHeader.o \
-	$(OUTLIB)DataFormatsVecbosEvent.o \
-	$(OUTLIB)AnalysisVecbosEventContent.o \
-	$(OUTLIB)AnalysisAnalysisBase.o
+	$(OUTLIB)AnalysisVecbosEventContent.o
 	$(CXX) $(CXXFLAGS) -I$(INCLUDEDIR) -ldl -o VecbosApp $(OUTLIB)/*.o $(GLIBS) $(LDFLAGS) $ $<
 
 clean:

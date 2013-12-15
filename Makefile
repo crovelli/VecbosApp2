@@ -18,7 +18,7 @@ CXXFLAGS      += $(ROOTCFLAGS)
 LIBS           = $(ROOTLIBS) 
 
 NGLIBS         = $(ROOTGLIBS) 
-NGLIBS        += -lMinuit -lMinuit2
+NGLIBS        += -lMinuit 
 GLIBS          = $(filter-out -lNew, $(NGLIBS))
 
 

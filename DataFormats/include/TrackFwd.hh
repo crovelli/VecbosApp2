@@ -2,8 +2,9 @@
 #define VECBOS_TRACKFWD_HH
 
 #include <vector>
+#include "DataFormats/include/Track.hh"
 
-namespace reco {
+namespace vecbos {
 
   typedef std::vector<Track> TrackCollection;
 

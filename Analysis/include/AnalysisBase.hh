@@ -1,7 +1,6 @@
 #ifndef ANALYSIS_BASE_HH
 #define ANALYSIS_BASE_HH
 
-#include <DataFormats/include/VecbosEvent.hh>
 #include <Analysis/include/VecbosEventContent.h>
 
 #include "TTree.h"
@@ -15,12 +14,12 @@ class AnalysisBase : public VecbosEventContent {
     //! destructor
     virtual ~AnalysisBase() { }
 
-    void                            init(TTree* tree = 0);
-    int                             loadTree(Long64_t entry);
+    void init(TTree* tree = 0);
+    int  loadTree(Long64_t entry);
 
   private:
     void loadEventHeader();
-    vecbos::VecbosEvent *Event;
+  //    vecbos::VecbosEvent *Event;
 
   };
 }

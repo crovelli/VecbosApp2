@@ -52,7 +52,6 @@ $(OUTLIB)AnalysisAnalysisBase.o: $(INCLUDEDIR)/Analysis/src/AnalysisBase.cc \
 VecbosApp: $(INCLUDEDIR)/Analysis/src/VecbosApp.cc \
 	$(OUTLIB)AnalysisVecbosEventContent.o \
 	$(OUTLIB)AnalysisAnalysisBase.o \
-	$(OUTLIB)DataFormatsVecbosEvent.o \
 	$(OUTLIB)DataFormatsEventHeader.o \
 	$(OUTLIB)DataFormatsTrack.o
 	$(CXX) $(CXXFLAGS) -I$(INCLUDEDIR) -ldl -o VecbosApp $(OUTLIB)/*.o $(GLIBS) $(LDFLAGS) $ $<

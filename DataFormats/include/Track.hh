@@ -2,8 +2,9 @@
 #define VECBOS_TRACK_h
 
 #include "TVector3.h"
+#include "TMath.h"
 
-namespace reco {
+namespace vecbos {
 
   class Track {
   public:
@@ -30,9 +31,9 @@ namespace reco {
     /// q/p 
     double qoverp() const { return charge() / p(); }
     /// polar angle  
-    double theta() const { return momentum_.theta(); }
+    double theta() const { return momentum_.Theta(); }
     /// Lambda angle
-    double lambda() const { return M_PI/2 - momentum_.theta(); }
+    double lambda() const { return TMath::Pi()/2 - momentum_.Theta(); }
     /// dxy parameter. (This is the transverse impact parameter w.r.t. to (0,0,0) ONLY if refPoint is close to (0,0,0): see parametrization definition above for details). See also function dxy(myBeamSpot) below.
     double dxy() const { return ( - vx() * py() + vy() * px() ) / pt(); }
     /// dxy parameter in perigee convention (d0 = - dxy)
@@ -42,7 +43,7 @@ namespace reco {
     /// dz parameter (= dsz/cos(lambda)). This is the track z0 w.r.t (0,0,0) only if the refPoint is close to (0,0,0). See also function dz(myBeamSpot) below.
     double dz() const { return vz() - (vx()*px()+vy()*py())/pt() * (pz()/pt()); }
     /// momentum vector magnitude
-    double p() const { return momentum_.R(); }
+    double p() const { return momentum_.Mag(); }
     /// track transverse momentum
     double pt() const { return sqrt( momentum_.Perp2() ); }
     /// x coordinate of momentum vector
@@ -76,11 +77,6 @@ namespace reco {
       return ( - (vx()-myBeamSpot.x()) * py() + (vy()-myBeamSpot.y()) * px() ) / pt(); 
     }
 
-    /// dxy parameter with respect to the beamSpot taking into account the beamspot slopes WARNING: this quantity can only be interpreted as a minimum transverse distance if beamSpot, if the beam spot is reasonably close to the refPoint, since linear approximations are involved). This is a good approximation for Tracker tracks.
-    double dxy(const BeamSpot& theBeamSpot) const { 
-      return dxy(theBeamSpot.position(vz()));
-    }
-
     /// dsz parameter with respect to a user-given beamSpot (WARNING: this quantity can only be interpreted as the distance in the S-Z plane to the beamSpot, if the beam spot is reasonably close to the refPoint, since linear approximations are involved). This is a good approximation for Tracker tracks.
     double dsz(const Point& myBeamSpot) const { 
       return (vz()-myBeamSpot.z())*pt()/p() - ((vx()-myBeamSpot.x())*px()+(vy()-myBeamSpot.y())*py())/pt() *pz()/p(); 
@@ -93,7 +89,7 @@ namespace reco {
     /// number of valid hits found 
     unsigned short numberOfValidHits() const { return numberOfValidHits_; }
     /// number of cases where track crossed a layer without getting a hit.
-    unsigned short numberOfLostHits() const { return numberOfLostHits_ }
+    unsigned short numberOfLostHits() const { return numberOfLostHits_; }
    
   private:
     float chi2_;
@@ -107,6 +103,9 @@ namespace reco {
 
     /// electric charge
     char charge_;
+
+    /// valid and lost hits
+    int numberOfValidHits_, numberOfLostHits_;
 
   };
 

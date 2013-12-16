@@ -39,5 +39,5 @@ void AnalysisBase::loadEventHeader() {
   eventHeader->setRun(runNumber);
   eventHeader->setEvent(eventNumber);
   eventHeader->setLumi(lumiBlock);
-  Event->setEventHeader(eventHeader);
+  //  Event->setEventHeader(eventHeader);
 }

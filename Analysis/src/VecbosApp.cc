@@ -17,6 +17,7 @@
 //#include "Analysis/src/AnalysisBase.cc"
 //#include "Analysis/include/AnalysisBase.hh"
 #include "Analysis/include/VecbosEventContent.h"
+#include "DataFormats/include/Track.hh"
 //#endif
 
 using namespace std;

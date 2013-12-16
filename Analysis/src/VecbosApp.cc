@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <stdio.h>
+#include <stdlib.h>
 
 // ROOT includes
 #include <TROOT.h>
@@ -13,7 +14,9 @@
 //#include "Analysis/include/Application.hh"
 
 //#if Application == 1
-#include "Analysis/include/AnalysisBase.hh"
+#include "Analysis/include/DYToEESelection.hh"
+//#include "Analysis/include/VecbosEventContent.h"
+#include "DataFormats/include/Track.hh"
 //#endif
 
 using namespace std;
@@ -62,7 +65,8 @@ int main(int argc, char* argv[]) {
   delete inputFile;
 
 
-  AnalysisBase selection(theChain);
+  //  AnalysisBase selection(theChain);
+  DYToEESelection selection(theChain);
   selection.Loop();
 
 }

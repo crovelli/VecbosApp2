@@ -1363,6 +1363,7 @@ public :
    virtual void     Show(Long64_t entry = -1);
 };
 
+
 #endif
 
 #ifdef VecbosEventContent_cxx
@@ -2115,4 +2116,5 @@ Int_t VecbosEventContent::Cut(Long64_t entry)
 // returns -1 otherwise.
    return 1;
 }
+
 #endif // #ifdef VecbosEventContent_cxx

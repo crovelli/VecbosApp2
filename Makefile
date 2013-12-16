@@ -18,7 +18,7 @@ CXXFLAGS      += $(ROOTCFLAGS)
 LIBS           = $(ROOTLIBS) 
 
 NGLIBS         = $(ROOTGLIBS) 
-#NGLIBS        += -lMinuit -lMinuit2
+NGLIBS        += -lMinuit 
 GLIBS          = $(filter-out -lNew, $(NGLIBS))
 
 
@@ -29,23 +29,43 @@ OUTLIB               = ./lib/
 .PREFIXES: ./lib/
 
 # DataFormats libs
-$(OUTLIB)DataFormatsEventHeader.o: $(INCLUDEDIR)/DataFormats/include/EventHeader.hh
+$(OUTLIB)DataFormatsEventHeader.o: $(INCLUDEDIR)/DataFormats/src/EventHeader.cc
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)DataFormatsEventHeader.o $<
-
-$(OUTLIB)DataFormatsVecbosEvent.o: $(INCLUDEDIR)/DataFormats/include/VecbosEvent.hh
+$(OUTLIB)DataFormatsVecbosEvent.o: $(INCLUDEDIR)/DataFormats/src/VecbosEvent.cc
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)DataFormatsVecbosEvent.o $<
+$(OUTLIB)DataFormatsCandidate.o: $(INCLUDEDIR)/DataFormats/src/Candidate.cc
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)DataFormatsCandidate.o $<
+$(OUTLIB)DataFormatsRecoCandidate.o: $(INCLUDEDIR)/DataFormats/src/RecoCandidate.cc \
+	$(OUTLIB)DataFormatsCandidate.o
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)DataFormatsRecoCandidate.o $<
+$(OUTLIB)DataFormatsTrack.o: $(INCLUDEDIR)/DataFormats/src/Track.cc
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)DataFormatsTrack.o $<
+$(OUTLIB)DataFormatsSuperCluster.o: $(INCLUDEDIR)/DataFormats/src/SuperCluster.cc
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)DataFormatsSuperCluster.o $<
+$(OUTLIB)DataFormatsEvent.o: $(INCLUDEDIR)/DataFormats/src/Event.cc \
+	$(OUTLIB)DataFormatsEventHeader.o \
+	$(OUTLIB)DataFormatsTrack.o \
+	$(OUTLIB)DataFormatsSuperCluster.o
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)DataFormatsEvent.o $<
 
-
-# Analysis libs
-$(OUTLIB)AnalysisVecbosEventContent.o: $(INCLUDEDIR)/Analysis/include/VecbosEventContent.h
+# Analysis generic libs
+$(OUTLIB)AnalysisVecbosEventContent.o: $(INCLUDEDIR)/Analysis/src/VecbosEventContent.C
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)AnalysisVecbosEventContent.o $<
-
-$(OUTLIB)AnalysisAnalysisBase.o: $(INCLUDEDIR)/Analysis/include/AnalysisBase.hh \
+$(OUTLIB)AnalysisAnalysisBase.o: $(INCLUDEDIR)/Analysis/src/AnalysisBase.cc \
 	$(OUTLIB)AnalysisVecbosEventContent.o
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)AnalysisAnalysisBase.o $<
 
+
+# Analyzer libs
+$(OUTLIB)AnalysisDYToEESelection.o: $(INCLUDEDIR)/Analysis/src/DYToEESelection.cc
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)AnalysisDYToEESelection.o $<
+
 VecbosApp: $(INCLUDEDIR)/Analysis/src/VecbosApp.cc \
-	$(OUTLIB)DataFormatsEventHeader.o \
-	$(OUTLIB)DataFormatsVecbosEvent.o \
-	$(OUTLIB)AnalysisAnalysisBase.o
+	$(OUTLIB)AnalysisVecbosEventContent.o \
+	$(OUTLIB)AnalysisAnalysisBase.o \
+	$(OUTLIB)DataFormatsEvent.o \
+	$(OUTLIB)AnalysisDYToEESelection.o
 	$(CXX) $(CXXFLAGS) -I$(INCLUDEDIR) -ldl -o VecbosApp $(OUTLIB)/*.o $(GLIBS) $(LDFLAGS) $ $<
+
+clean:
+	rm -f lib/*o

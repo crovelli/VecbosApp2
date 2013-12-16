@@ -1,3 +1,3 @@
-root://xrootd.t2.ucsd.edu//hadoop/cms/store/user/emanuele/VECBOS_2_44X_V1/Tbar_TuneZ2_s-channel_7TeV-powheg-tauola/default_MC_1_1_Fgu.root
-root://xrootd.t2.ucsd.edu//hadoop/cms/store/user/emanuele/VECBOS_2_44X_V1/Tbar_TuneZ2_s-channel_7TeV-powheg-tauola/default_MC_2_2_4vc.root
-root://xrootd.t2.ucsd.edu//hadoop/cms/store/user/emanuele/VECBOS_2_44X_V1/Tbar_TuneZ2_s-channel_7TeV-powheg-tauola/default_MC_3_3_bVk.root
+root://xrootd.t2.ucsd.edu//store/user/emanuele/VECBOS_2_44X_V1/Tbar_TuneZ2_s-channel_7TeV-powheg-tauola/default_MC_1_1_Fgu.root
+root://xrootd.t2.ucsd.edu//store/user/emanuele/VECBOS_2_44X_V1/Tbar_TuneZ2_s-channel_7TeV-powheg-tauola/default_MC_2_2_4vc.root
+root://xrootd.t2.ucsd.edu//store/user/emanuele/VECBOS_2_44X_V1/Tbar_TuneZ2_s-channel_7TeV-powheg-tauola/default_MC_3_3_bVk.root

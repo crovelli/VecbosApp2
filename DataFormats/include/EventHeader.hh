@@ -12,7 +12,7 @@ namespace vecbos {
       _runNumber(0), _eventNumber(0), _lumiSection(0) { };
     /// constructor from values
     EventHeader(int run, ULong64_t evt, int lumi) :
-      _runNumber(0), _eventNumber(0), _lumiSection(0) { };
+      _runNumber(run), _eventNumber(evt), _lumiSection(lumi) { };
     /// destructor
     ~EventHeader();
     // getters

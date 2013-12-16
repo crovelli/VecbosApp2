@@ -38,22 +38,33 @@ $(OUTLIB)DataFormatsCandidate.o: $(INCLUDEDIR)/DataFormats/src/Candidate.cc
 $(OUTLIB)DataFormatsRecoCandidate.o: $(INCLUDEDIR)/DataFormats/src/RecoCandidate.cc \
 	$(OUTLIB)DataFormatsCandidate.o
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)DataFormatsRecoCandidate.o $<
-$(OUTLIB)DataFormatsTrack.o: $(INCLUDEDIR)/DataFormats/src/Track.cc \
-	$(OUTLIB)DataFormatsRecoCandidate.o
+$(OUTLIB)DataFormatsTrack.o: $(INCLUDEDIR)/DataFormats/src/Track.cc
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)DataFormatsTrack.o $<
+$(OUTLIB)DataFormatsSuperCluster.o: $(INCLUDEDIR)/DataFormats/src/SuperCluster.cc
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)DataFormatsSuperCluster.o $<
+$(OUTLIB)DataFormatsEvent.o: $(INCLUDEDIR)/DataFormats/src/Event.cc \
+	$(OUTLIB)DataFormatsEventHeader.o \
+	$(OUTLIB)DataFormatsTrack.o \
+	$(OUTLIB)DataFormatsSuperCluster.o
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)DataFormatsEvent.o $<
 
-# Analysis libs
+# Analysis generic libs
 $(OUTLIB)AnalysisVecbosEventContent.o: $(INCLUDEDIR)/Analysis/src/VecbosEventContent.C
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)AnalysisVecbosEventContent.o $<
 $(OUTLIB)AnalysisAnalysisBase.o: $(INCLUDEDIR)/Analysis/src/AnalysisBase.cc \
 	$(OUTLIB)AnalysisVecbosEventContent.o
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)AnalysisAnalysisBase.o $<
 
+
+# Analyzer libs
+$(OUTLIB)AnalysisDYToEESelection.o: $(INCLUDEDIR)/Analysis/src/DYToEESelection.cc
+	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) -o $(OUTLIB)AnalysisDYToEESelection.o $<
+
 VecbosApp: $(INCLUDEDIR)/Analysis/src/VecbosApp.cc \
 	$(OUTLIB)AnalysisVecbosEventContent.o \
 	$(OUTLIB)AnalysisAnalysisBase.o \
-	$(OUTLIB)DataFormatsEventHeader.o \
-	$(OUTLIB)DataFormatsTrack.o
+	$(OUTLIB)DataFormatsEvent.o \
+	$(OUTLIB)AnalysisDYToEESelection.o
 	$(CXX) $(CXXFLAGS) -I$(INCLUDEDIR) -ldl -o VecbosApp $(OUTLIB)/*.o $(GLIBS) $(LDFLAGS) $ $<
 
 clean:

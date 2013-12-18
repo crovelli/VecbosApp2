@@ -18,14 +18,10 @@ namespace vecbos {
     /// virtual destructor   
     virtual ~Track() { }
     /// constructor from fit parameters and error matrix  
-    Track( double chi2, double ndof, const Point & referencePoint,
+    Track( double chi2, const Point & referencePoint,
 	   const Vector & momentum, int charge);
-    /// chi-squared of the fit
-    double chi2() const { return chi2_; }
-    /// number of degrees of freedom of the fit
-    double ndof() const { return ndof_; }
     /// chi-squared divided by n.d.o.f. (or chi-squared * 1e6 if n.d.o.f. is zero)
-    double normalizedChi2() const { return ndof_ != 0 ? chi2_ / ndof_ : chi2_ * 1e6; }
+    double normalizedChi2() const { return chi2_; }
     /// track electric charge
     int charge() const { return charge_; }
     /// q/p 
@@ -65,6 +61,8 @@ namespace vecbos {
 
     /// track momentum vector
     const Vector & momentum() const { return momentum_; }
+    /// track momentum error
+    const float ptError() const { return ptErr_; }
 
     /// Reference point on the track
     const Point & referencePoint() const { return vertex_; }
@@ -86,27 +84,81 @@ namespace vecbos {
       return (vz()-myBeamSpot.z()) - ((vx()-myBeamSpot.x())*px()+(vy()-myBeamSpot.y())*py())/pt() * pz()/pt(); 
     }
 
-    /// number of valid hits found 
-    unsigned short numberOfValidHits() const { return numberOfValidHits_; }
-    /// number of cases where track crossed a layer without getting a hit.
-    unsigned short numberOfLostHits() const { return numberOfLostHits_; }
    
+    /// get the track vertex
+    Point getVertex() { return vertex_; }
+    /// set the track vertex
+    void setVertex(Point vertex) { vertex_ = vertex; }
+
+    struct HitPattern {
+      int numberOfValidHits, numberOfLostHits;
+      int numberOfPixelHits, trackerLayersWithMeasurement, expectedInnerLayers;
+      int numberOfValidPixelBarrelHits, numberOfValidPixelEndcapHits,
+	numberOfValidStripTIBHits, numberOfValidStripTIDHits, numberOfValidStripTOBHits,
+	numberOfValidStripTECHits, numberOfValidMuonHits;
+      int qualityMask;
+      HitPattern() :
+	numberOfValidHits(0), numberOfLostHits(0),
+	numberOfPixelHits(0), trackerLayersWithMeasurement(0), expectedInnerLayers(0),
+	numberOfValidPixelBarrelHits(0), numberOfValidPixelEndcapHits(0),
+	numberOfValidStripTIBHits(0), numberOfValidStripTIDHits(0), numberOfValidStripTOBHits(0),
+	numberOfValidStripTECHits(0), numberOfValidMuonHits(0),
+	qualityMask(0) 
+      { }
+    } ;
+
+    /// get the hit pattern
+    HitPattern getHitPattern() { return hitPattern_; }
+    /// set the hit pattern
+    void setHitPattern(HitPattern pattern) { hitPattern_ = pattern; }
+
+    /// number of valid hits found 
+    int numberOfValidHits() const { return hitPattern_.numberOfValidHits; }
+    /// number of cases where track crossed a layer without getting a hit.
+    int numberOfLostHits() const { return hitPattern_.numberOfLostHits; }
+    /// Access the hit pattern counting (in the Tracker) the number of expected crossed layers  before the first trajectory's hit
+    int trackerExpectedHitsInner() { return hitPattern_.expectedInnerLayers; }
+    /// number of hits in the muon chambers
+    int numberOfValidMuonHits() { return hitPattern_.numberOfValidMuonHits; }
+
+    struct ImpactParameters {
+      float ip3D, ip3Derr;
+      float ip2D, ip2Derr;
+      float d0, d0err;
+      float dz, dzerr;
+      ImpactParameters() :
+	ip3D(999.), ip3Derr(999.), ip2D(999.), ip2Derr(999.), 
+	d0(999.), d0err(999.), dz(999.), dzerr(999.)
+      { }
+    } ;
+
+    /// get the impact parameters
+    ImpactParameters getImpactParameters() { return ips_; }
+    /// set the impact parameters
+    void setImpactParameters(ImpactParameters ips) { ips_ = ips; }
+    /// absolute significance of impact parameter in 3D
+    float sip3D() { return fabs(ips_.ip3D/ips_.ip3Derr); }
+    /// absolute significance of impact parameter in 2D
+    float sip2D() { return fabs(ips_.ip2D/ips_.ip2Derr); }
+    
+    /// set the pt error
+    void setPtError(float error) { ptErr_ = error; }
+
   private:
     float chi2_;
      /// innermost (reference) point on track
     Point vertex_;
     /// momentum vector at innermost point
     Vector momentum_;
-
-    /// number of degrees of freedom
-    float ndof_;
-
+    /// momentum error
+    float ptErr_;
     /// electric charge
     char charge_;
-
-    /// valid and lost hits
-    int numberOfValidHits_, numberOfLostHits_;
-
+    /// Hit Pattern
+    HitPattern hitPattern_;
+    /// impact parameters
+    ImpactParameters ips_;
+    
   };
 
 }

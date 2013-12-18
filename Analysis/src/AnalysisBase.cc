@@ -47,10 +47,10 @@ int AnalysisBase::loadTree(Long64_t entry) {
   loadPFSuperClusters();
 
   // load the tracks collections
-  // loadGeneralTracks();
-  // loadGsfTracks();
-  // loadGlobalMuonTracks();
-  // loadStandaloneMuonTracks();
+  loadGeneralTracks();
+  loadGsfTracks();
+  loadGlobalMuonTracks();
+  loadStandaloneMuonTracks();
 
   return centry;
 }
@@ -194,9 +194,10 @@ void AnalysisBase::loadGeneralTracks() {
 
   GeneralTracks.clear();
 
-  cout << "nPV = " << nPV << endl;
-
-  Track::Point firstGoodPV(PVxPV[0],PVyPV[0],PVzPV[0]);
+  Track::Point firstGoodPV(0.,0.,0.);
+  if(PrimaryVertices.size()>0) firstGoodPV.SetXYZ(PrimaryVertices.front().x(),
+						  PrimaryVertices.front().y(),
+						  PrimaryVertices.front().z() );
 
   for(int i=0; i<nTrack; ++i) {
 
@@ -206,49 +207,50 @@ void AnalysisBase::loadGeneralTracks() {
 
     Track::Point trackVxt(trackVxTrack[i],trackVyTrack[i],trackVzTrack[i]);
     track.setVertex(trackVxt);
-    
-    // Track::HitPattern pattern;
-    // pattern.numberOfValidHits = trackValidHitsTrack[i];
-    // pattern.numberOfLostHits = trackLostHitsTrack[i];
-    // pattern.numberOfPixelHits = pixelHitsTrack[i];
-    // pattern.trackerLayersWithMeasurement = trackerLayersWithMeasurementTrack[i];
-    // pattern.expectedInnerLayers = expInnerLayersTrack[i];
-    // pattern.numberOfValidPixelBarrelHits = numberOfValidPixelBarrelHitsTrack[i];
-    // pattern.numberOfValidPixelEndcapHits = numberOfValidPixelEndcapHitsTrack[i];
-    // pattern.numberOfValidStripTIBHits = numberOfValidStripTIBHitsTrack[i];
-    // pattern.numberOfValidStripTIDHits = numberOfValidStripTIDHitsTrack[i];
-    // pattern.numberOfValidStripTOBHits = numberOfValidStripTOBHitsTrack[i];
-    // pattern.numberOfValidStripTECHits = numberOfValidStripTECHitsTrack[i];
-    // pattern.numberOfValidMuonHits = numberOfValidMuonHitsTrack[i];
-    // pattern.qualityMask = qualityMaskTrack[i];
+  
+    Track::HitPattern pattern;
+    pattern.numberOfValidHits = trackValidHitsTrack[i];
+    pattern.numberOfLostHits = trackLostHitsTrack[i];
+    pattern.numberOfPixelHits = pixelHitsTrack[i];
+    pattern.trackerLayersWithMeasurement = trackerLayersWithMeasurementTrack[i];
+    pattern.expectedInnerLayers = expInnerLayersTrack[i];
+    pattern.numberOfValidPixelBarrelHits = numberOfValidPixelBarrelHitsTrack[i];
+    pattern.numberOfValidPixelEndcapHits = numberOfValidPixelEndcapHitsTrack[i];
+    pattern.numberOfValidStripTIBHits = numberOfValidStripTIBHitsTrack[i];
+    pattern.numberOfValidStripTIDHits = numberOfValidStripTIDHitsTrack[i];
+    pattern.numberOfValidStripTOBHits = numberOfValidStripTOBHitsTrack[i];
+    pattern.numberOfValidStripTECHits = numberOfValidStripTECHitsTrack[i];
+    pattern.numberOfValidMuonHits = numberOfValidMuonHitsTrack[i];
+    pattern.qualityMask = qualityMaskTrack[i];
+    track.setHitPattern(pattern);
+  
+    Track::ImpactParameters ips;
+    ips.ip3D = impactPar3DTrack[i];
+    ips.ip3Derr = impactPar3DErrorTrack[i];
+    ips.ip2D = transvImpactParTrack[i];
+    ips.ip2Derr = transvImpactParErrorTrack[i];
+    ips.d0 = d0Track[i];
+    ips.d0err = d0ErrorTrack[i];
+    ips.dz = dzTrack[i];
+    ips.dzerr = dzErrorTrack[i];
+    track.setImpactParameters(ips);
 
-    // track.setHitPattern(pattern);
-    
-    // Track::ImpactParameters ips;
-    // ips.ip3D = impactPar3DTrack[i];
-    // ips.ip3Derr = impactPar3DErrorTrack[i];
-    // ips.ip2D = transvImpactParTrack[i];
-    // ips.ip2Derr = transvImpactParErrorTrack[i];
-    // ips.d0 = d0Track[i];
-    // ips.d0err = d0ErrorTrack[i];
-    // ips.dz = dzTrack[i];
-    // ips.dzerr = dzErrorTrack[i];
-    
-    // track.setImpactParameters(ips);
-
-    // track.setPtError(ptErrorTrack[i]);
+    track.setPtError(ptErrorTrack[i]);
 
     GeneralTracks.push_back(track);
 
-    }
+  }
+
 }
 
 void AnalysisBase::loadGsfTracks() {
 
   GsfTracks.clear();
 
-  Track::Point firstGoodPV(PVxPV[0],PVyPV[0],PVzPV[0]);
-
+  Track::Point firstGoodPV(0.,0.,0.);
+  if(PrimaryVertices.size()>0) firstGoodPV.SetXYZ(PrimaryVertices.front().x(),
+						    PrimaryVertices.front().y(),
+						    PrimaryVertices.front().z() );
   for(int i=0; i<nGsfTrack; ++i) {
 
     Track::Vector momentum(pxGsfTrack[i],pyGsfTrack[i],pzGsfTrack[i]);
@@ -298,7 +300,10 @@ void AnalysisBase::loadGlobalMuonTracks() {
 
   GlobalMuonTracks.clear();
 
-  Track::Point firstGoodPV(PVxPV[0],PVyPV[0],PVzPV[0]);
+  Track::Point firstGoodPV(0.,0.,0.);
+  if(PrimaryVertices.size()>0) firstGoodPV.SetXYZ(PrimaryVertices.front().x(),
+						    PrimaryVertices.front().y(),
+						    PrimaryVertices.front().z() );
 
   for(int i=0; i<nGlobalMuonTrack; ++i) {
 
@@ -349,7 +354,10 @@ void AnalysisBase::loadStandaloneMuonTracks() {
 
   StandaloneMuonTracks.clear();
 
-  Track::Point firstGoodPV(PVxPV[0],PVyPV[0],PVzPV[0]);
+  Track::Point firstGoodPV(0.,0.,0.);
+  if(PrimaryVertices.size()>0) firstGoodPV.SetXYZ(PrimaryVertices.front().x(),
+						    PrimaryVertices.front().y(),
+						    PrimaryVertices.front().z() );
 
   for(int i=0; i<nSTAMuonTrack; ++i) {
 
